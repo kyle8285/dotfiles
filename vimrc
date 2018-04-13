@@ -1,207 +1,140 @@
-" Vundle {{{
+set nocompatible		" be iMproved, required
+filetype off			" required
 
-set rtp+=~/.vim/bundle/Vundle.vim
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim,/usr/local/opt/fzf
 call vundle#begin()
-Plugin 'gmarik/vundle'
 
-Plugin 'scrooloose/nerdtree'
-Plugin 'bling/vim-airline'
-Plugin 'bkad/CamelCaseMotion'
-Plugin 'tpope/vim-fugitive'
-Plugin 'airblade/vim-gitgutter'
-Plugin 'kristijanhusak/vim-multiple-cursors'
-Plugin 'joom/vim-commentary'
-Plugin 'vim-scripts/Align'
-Plugin 'valloric/MatchTagAlways'
-Plugin 'MarcWeber/vim-addon-mw-utils'
-Plugin 'tomtom/tlib_vim'
-Plugin 'garbas/vim-snipmate'
-Plugin 'honza/vim-snippets'
-Plugin 'jiangmiao/auto-pairs'
-Plugin 'jistr/vim-nerdtree-tabs'
-Plugin 'wesQ3/vim-windowswap'
-Plugin 'tpope/vim-surround'
-Plugin 'kien/ctrlp.vim'
-Plugin 'ervandew/supertab'
-Plugin 'ConradIrwin/vim-bracketed-paste'
-Plugin 'gcmt/wildfire.vim'
-Plugin 'Yggdroot/indentLine'
-Plugin 'rking/ag.vim'
+Plugin 'Vundle/Vundle.vim'
 
-"Front End
-Plugin 'pangloss/vim-javascript'
-Plugin 'ap/vim-css-color'
-Plugin 'miripiruni/CSScomb-for-Vim'
-Plugin 'kchmck/vim-coffee-script'
-Plugin 'mattn/emmet-vim'
-Plugin 'groenewege/vim-less'
-Plugin 'digitaltoad/vim-pug'
-Plugin 'othree/yajs.vim'
-"Color Schemes
-Plugin 'vim-scripts/wombat256.vim'
+Plugin 'flazz/vim-colorschemes'
 
-call vundle#end()            " required
-" }}}
+Plugin 'junegunn/fzf.vim'	" fuzzy file search
+Plugin 'mileszs/ack.vim'	" text search tool (grep/ag)
+Plugin 'scrooloose/nerdtree'      " tree explorer
 
-" Plugin Settings {{{
-let g:windowswap_map_keys = 0 "prevent default bindings
-let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git'
-" }}}
+Plugin 'airblade/vim-gitgutter'   " show git diffs in gutter
+Plugin 'pangloss/vim-javascript'  " syntax highlighting, etc
+Plugin 'tpope/vim-surround'       " mappings for surroundings
+Plugin 'tpope/vim-repeat'         " repeat mapped commands from plugins
+Plugin 'tpope/vim-commentary'     " comment stuff out
+Plugin 'mattn/emmet-vim'          " expanding abbreviations
+Plugin 'w0rp/ale'                 " asynchronous linting
+Plugin 'Yggdroot/indentLine'      " display lines for indentation
+Plugin 'othree/javascript-libraries-syntax.vim' " syntax for javascript libraries
 
-" Airline {{{
-let g:airline#extensions#tabline#enabled = 1
-let g:airline_powerline_fonts = 1 "change 0 to 1 if you have a powerline font
-set laststatus=2
-set t_Co=256
-" }}}
+call vundle#end()		" required
 
-" NERDTree {{{
-let g:NERDTreeMapChangeRoot =  "`"
+" General
 
-nmap <Leader>] :NERDTreeTabsToggle<CR>
-nnoremap <Space>c :NERDTreeCWD<CR>
-let NERDTreeMinimalUI=1
-let NERDTreeDirArrows=0
-let NERDTreeQuitOnOpen = 1
-let NERDTreeIgnore=['\.pyc$', '\~$']
-let NERDTreeShowLineNumbers = 1
-let NERDTreeWinSize = 25
-
-function! NERDTreeQuit()
-  redir => buffersoutput
-  silent buffers
-  redir END
-"                     1BufNo  2Mods.     3File           4LineNo
-  let pattern = '^\s*\(\d\+\)\(.....\) "\(.*\)"\s\+line \(\d\+\)$'
-  let windowfound = 0
-
-  for bline in split(buffersoutput, "\n")
-    let m = matchlist(bline, pattern)
-
-    if (len(m) > 0)
-      if (m[2] =~ '..a..')
-        let windowfound = 1
-      endif
-    endif
-  endfor
-
-  if (!windowfound)
-    quitall
-  endif
-endfunction
-autocmd WinEnter * call NERDTreeQuit()
-" }}}
-
-" General {{{
-
-set nocompatible
-filetype off
-set foldmethod=marker
-set linebreak
-
-set number
-
+filetype plugin indent on 	" required
 syntax on
+colorscheme monokai
+
+set background=dark
+set foldmethod=marker
 set mouse=a
-
-filetype plugin indent on
-
 set encoding=utf-8
 set fileencodings=utf-8
 
 set autoindent
 set smartindent
 set cindent
-set background=dark
+set shiftround
+set nowrap
+
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
 set expandtab
 set smarttab
-set shiftwidth=2
-set softtabstop=2
-set tabstop=2
-set wildignore=*.pyc
+
 set ignorecase
 set smartcase
 set hlsearch
 set incsearch
-set shiftround
+
 set history=1000
 set undolevels=1000
+
 set noswapfile
 set nobackup
-set number
-set linespace=3
-set nowrap
 
-" Remove trailing whitespace on save
-autocmd BufWritePre * :%s/\s\+$//e
-" }}}
+set backspace=indent,eol,start
 
-" Some Useful Key Mappings {{{
-
-"Split swap
-nmap <Tab> :CtrlPBuffer<CR>
-nmap <Leader>f :CtrlPLine<CR>
-nnoremap <silent> <Leader>sw :call WindowSwap#EasyWindowSwap()<CR>
-nmap <Leader>` :call WindowSwap#EasyWindowSwap()<CR><Leader>[:call WindowSwap#EasyWindowSwap()<CR>
-
-"Window splits
-nmap <leader>swh :topleft vnew<CR>
-nmap <leader>swl :botright vnew<CR>
-nmap <leader>swk :topleft new<CR>
-nmap <leader>swj :botright new<CR>
-
-"Buffer splits
-nmap <leader>sh :leftabove vnew<cr>
-nmap <leader>sl :rightbelow vnew<cr>
-nmap <leader>sk :leftabove new<cr>
-nmap <leader>sj :rightbelow new<cr>
-
-"for unhighlighing the selections
+" Remove highlighting search terms
 nmap <Space>x :let @/=''<CR>
 
-"split switch
-nnoremap <Leader>[ <C-W>w
+" Remove trailing whitespace on save
+autocmd BufWritePre * %s/\s\+$//e
 
-"Split movement bindings
+" Splits
+
+" Window splits
+nmap <Leader>swh :topleft vnew<CR>
+nmap <Leader>swl :botright vnew<CR>
+nmap <Leader>swk :topleft new<CR>
+nmap <Leader>swj :botright new<CR>
+
+" Buffer splits
+nmap <Leader>sh :leftabove vnew<CR>
+nmap <Leader>sl :rightbelow<CR>
+nmap <Leader>sk :leftabove new<CR>
+nmap <Leader>sj :rightbelow new<CR>
+
+" Move between splits
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
 
-"System clipboard
-vmap <Leader>y "+y
-vmap <Leader>d "+d
-nmap <Leader>p "+p
-nmap <Leader>P "+P
-vmap <Leader>p "+p
-vmap <Leader>P "+P
-
-"Keep the cursor in the same place after yank
-vmap y ygv<Esc>
-
-"Reload vimrc
+" Reload vimrc
 nmap <F5> :source ~/.vimrc<CR>
 
-"New Tab
-nmap <Leader>n :tabnew<CR>
+" Copy/Paste with clipboard
+vnoremap <C-c> :w !pbcopy<CR><CR>
+noremap <C-v> :r !pbpaste<CR><CR>
 
-"Paste mode toggle
-set pastetoggle=<F5><F5>
+" fzf file search
+nmap <Tab> :Buffer<CR>
+nmap <Leader>f :Files<CR>
+nmap <Leader>r :Tags<CR>
 
-"Keep selection after indent
-vnoremap > ><CR>gv
-vnoremap < <<CR>gv
+" Ag Silver Searcher
 
-" "Camel case motion (with shift)
-map <Space>w <Plug>CamelCaseMotion_w
-map <Space>b <Plug>CamelCaseMotion_b
-map <Space>e <Plug>CamelCaseMotion_e
+" configure ack.vim to use ag (silver searcher) if available
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep'
+endif
 
-" Less to Css
-nnoremap <Leader>m :w <BAR> !lessc % > @:t:r.css<CR><space>
-" }}}
+" don't jump to first result automatically
+cnoreabbrev Ack Ack!
+nnoremap <Leader>a :Ack!<space>
 
-let g:ag_working_path_mode="r"
+" git-gutter settings
+set updatetime=100
+let g:gitgutter_max_signs = 500   " default value
+let g:gitgutter_map_keys = 0      " disable key mappings
 
-set clipboard=unnamedplus
-colorscheme wombat256mod
+" emmet settings
+let g:user_emmet_install_global = 0
+" imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
+autocmd FileType html EmmetInstall
+
+" ALE settings
+let g:ale_linters = {
+\ 'javascript': ['eslint']
+\}
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+
+" NERDTree settings
+nmap <Leader>t :NERDTreeToggle<CR>
+nmap <Leader>F :NERDTreeFind<CR>    " go to file in tree
+let NERDTreeAutoDeleteBuffer = 1    " delete buffers automatically
+
+" indentLine settings
+autocmd Filetype json let g:indentLine_enabled = 0  " prevents hiding quotes
+
+let g:used_javascript_libs = 'underscore,angularjs,jasmine,jquery'
