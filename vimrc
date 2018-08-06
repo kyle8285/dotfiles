@@ -9,8 +9,8 @@ Plugin 'Vundle/Vundle.vim'
 
 Plugin 'flazz/vim-colorschemes'
 
-Plugin 'junegunn/fzf.vim'	" fuzzy file search
-Plugin 'mileszs/ack.vim'	" text search tool (grep/ag)
+Plugin 'junegunn/fzf.vim'	        " fuzzy file search
+Plugin 'mileszs/ack.vim'	        " text search tool (grep/ag)
 Plugin 'scrooloose/nerdtree'      " tree explorer
 
 Plugin 'airblade/vim-gitgutter'   " show git diffs in gutter
@@ -22,6 +22,10 @@ Plugin 'mattn/emmet-vim'          " expanding abbreviations
 Plugin 'w0rp/ale'                 " asynchronous linting
 Plugin 'Yggdroot/indentLine'      " display lines for indentation
 Plugin 'othree/javascript-libraries-syntax.vim' " syntax for javascript libraries
+Plugin 'othree/yajs.vim'          " more javascript syntax
+Plugin 'valloric/matchtagalways'  " match open/close tags in xml/html
+Plugin 'wesQ3/vim-windowswap'     " swap windows/buffers
+Plugin 'valloric/youcompleteme'   " code completion engine
 
 call vundle#end()		" required
 
@@ -29,7 +33,7 @@ call vundle#end()		" required
 
 filetype plugin indent on 	" required
 syntax on
-colorscheme monokai
+colorscheme Tomorrow-Night-Bright
 
 set background=dark
 set foldmethod=marker
@@ -78,7 +82,7 @@ nmap <Leader>swj :botright new<CR>
 
 " Buffer splits
 nmap <Leader>sh :leftabove vnew<CR>
-nmap <Leader>sl :rightbelow<CR>
+nmap <Leader>sl :rightbelow vnew<CR>
 nmap <Leader>sk :leftabove new<CR>
 nmap <Leader>sj :rightbelow new<CR>
 
@@ -117,9 +121,9 @@ let g:gitgutter_max_signs = 500   " default value
 let g:gitgutter_map_keys = 0      " disable key mappings
 
 " emmet settings
-let g:user_emmet_install_global = 0
-" imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
-autocmd FileType html EmmetInstall
+" let g:user_emmet_install_global = 0
+let g:user_emmet_expandabbr_key = '<Tab>'
+autocmd FileType html imap <buffer> <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
 
 " ALE settings
 let g:ale_linters = {
@@ -136,6 +140,7 @@ let NERDTreeAutoDeleteBuffer = 1    " delete buffers automatically
 
 " indentLine settings
 autocmd Filetype json let g:indentLine_enabled = 0  " prevents hiding quotes
+autocmd FileType c setlocal expandtab shiftwidth=4 softtabstop=4
 
 " javascript-libraries-syntax settings
 let g:used_javascript_libs = 'underscore,angularjs,jasmine,jquery'
